@@ -9,7 +9,7 @@ function R(cmd, username, repo) {
   return new Promise(function (resolve, reject) {
     var spawn = require('child_process').spawn;
     // var command = spawn(cmd, [repo, username], {
-    var command = spawn(cmd, ['https://api.github.com/user/repos',"-u", `${username}`, "-d", `{"name":"${repo}"}`], {
+    var command = spawn(cmd, ["-u", `${username.trim()}`, 'https://api.github.com/user/repos', "-d", `{"name":"${repo.trim()}"}`], {
       cwd: process.cwd(),
       stdio: 'inherit'
     });
@@ -32,7 +32,7 @@ module.exports = function C() {
            .then((username) => {
              R(`curl`, username, result.repo)
                .then((value) => {resolve(value);})
-               .catch((err) => {reject(err)});
+              //  .catch((err) => {reject(err)});
            })
            .catch((err) => {reject(err)})
        });
