@@ -1,6 +1,6 @@
 {
   "name": "cr34t3",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "Git init or get current branch easily",
   "main": "index.js",
   "scripts": {
