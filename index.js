@@ -33,8 +33,8 @@ function C() {
              R(`curl`, username, result.repo)
                .then((value) => {resolve(value);})
                .catch((err) => {reject(err)});
-           }).catch((err) => {reject(err)});
+           })
+           .catch((err) => {reject(err)})
        });
-     });
   });
 }
