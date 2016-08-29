@@ -23,7 +23,7 @@ function R(cmd, username, repo) {
   })
 }
 
-function C() {
+module.exports = function C() {
  return new Promise(function(resolve, reject) {
    var prompt = require('prompt');
        prompt.start();
