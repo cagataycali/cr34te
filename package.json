@@ -1,7 +1,7 @@
 {
   "name": "cr34t3",
   "version": "1.0.14",
-  "description": "Git init or get current branch easily",
+  "description": "Create github repository in programmatically.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
