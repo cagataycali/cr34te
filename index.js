@@ -31,7 +31,9 @@ module.exports = function C() {
          E(`git config user.name`) // Be sure your git.config.username equal your github username
            .then((username) => {
              R(`curl`, username, result.repo)
-               .then((value) => {resolve(value);})
+               .then((value) => {
+                 resolve(`https://github.com/${username}/${result.repo}.git`);
+               })
               //  .catch((err) => {reject(err)});
            })
            .catch((err) => {reject(err)})
