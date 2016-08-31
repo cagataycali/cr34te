@@ -7,6 +7,8 @@ var prompt = require('prompt');
 var updateNotifier = require('update-notifier');
 var pkg = require('./package.json');
 updateNotifier({pkg}).notify();
+var inquirer = require('inquirer');
+var cmdify = require('cmdify');
 
 function R(cmd, username, repo) {
   return new Promise(function (resolve, reject) {
@@ -35,14 +37,36 @@ module.exports = function C() {
        E(`git config user.name`) // Be sure your git.config.username equal your github username
          .then((username) => {
            console.log(`Dedected username: ${username}`);
-           prompt.start();
-           prompt.get([{name:'repo', required: true, description: "Github repo name: Ex. MyAwesomeRepo"}], function (err, result) {
+
+           var questions = [
+             {
+               type: 'input',
+               name: 'url',
+               message: 'Which name you want to git url?'
+             }
+           ];
+
+           inquirer.prompt(questions).then(function (answers) {
+             var loader = [
+               '/ Creating.',
+               '| Creating..',
+               '\\ Creating...',
+               '- Creating..'
+             ];
+             var i = 4;
+             var ui = new inquirer.ui.BottomBar({bottomBar: loader[i % 4]});
+
+             setInterval(function () {
+               ui.updateBottomBar(loader[i++ % 4]);
+             }, 300);
+
              R(`curl`, username, result.repo)
                .then((value) => {
+                 ui.updateBottomBar('Repository creating done!\n');
                  resolve(`https://github.com/${username}/${result.repo}.git`);
-               })
+               }).catch((err) => {reject(err)})
            });
          })
          .catch((err) => {reject(err)})
-  });
+  })
 }
