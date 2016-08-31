@@ -38,8 +38,6 @@ module.exports = function C() {
          .then((username) => {
            console.log(`Dedected username: ${username}`);
 
-
-
            var questions = [
              {
                type: 'input',
@@ -50,10 +48,10 @@ module.exports = function C() {
 
            inquirer.prompt(questions).then(function (answers) {
              var loader = [
-               '/ Installing.',
-               '| Installing..',
-               '\\ Installing...',
-               '- Installing..'
+               '/ Creating.',
+               '| Creating..',
+               '\\ Creating...',
+               '- Creating..'
              ];
              var i = 4;
              var ui = new inquirer.ui.BottomBar({bottomBar: loader[i % 4]});
@@ -62,15 +60,11 @@ module.exports = function C() {
                ui.updateBottomBar(loader[i++ % 4]);
              }, 300);
 
-             E(`git init && git remote add origin ${answers.url} && git remote show origin && git symbolic-ref HEAD && echo "# Hi" >> README.md && git add . && git commit -m "Hi" && git push -u origin master`)
-                 .then((value) => {
-                   B()
-                     .then((out) => {ui.updateBottomBar('Init done!\n');resolve(out)})
-                     .catch((err) => {ui.updateBottomBar('Init error!\n', err);reject(err)})
-                 })
-                 .catch((err) => {ui.updateBottomBar('Init error!\n', err);reject(err)});
-
-
+             R(`curl`, username, result.repo)
+               .then((value) => {
+                 ui.updateBottomBar('Repository creating done!\n');
+                 resolve(`https://github.com/${username}/${result.repo}.git`);
+               })
            });
          })
          .catch((err) => {reject(err)})
