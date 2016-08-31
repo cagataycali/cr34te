@@ -1,6 +1,6 @@
 {
   "name": "cr34t3",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "description": "Create github repository in programmatically.",
   "main": "index.js",
   "scripts": {
