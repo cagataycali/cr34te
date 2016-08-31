@@ -64,7 +64,7 @@ module.exports = function C() {
                .then((value) => {
                  ui.updateBottomBar('Repository creating done!\n');
                  resolve(`https://github.com/${username}/${result.repo}.git`);
-               })
+               }).catch((err) => {reject(err)})
            });
          })
          .catch((err) => {reject(err)})
