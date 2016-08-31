@@ -38,26 +38,22 @@ module.exports = function C() {
          .then((username) => {
            console.log(`Dedected username: ${username}`);
 
-           prompt.start();
-           prompt.get([{name:'repo', req uired: true, description: "Github repo name: Ex. MyAwesomeRepo"}], function (err, result) {
-
-           });
 
 
            var questions = [
              {
                type: 'input',
                name: 'url',
-               message: 'Which name you want to github repository?'
+               message: 'Which name you want to git url?'
              }
            ];
 
            inquirer.prompt(questions).then(function (answers) {
              var loader = [
-               '/ Creating github repository.',
-               '| Creating github repository..',
-               '\\ Creating github repository...',
-               '- Creating github repository..'
+               '/ Installing.',
+               '| Installing..',
+               '\\ Installing...',
+               '- Installing..'
              ];
              var i = 4;
              var ui = new inquirer.ui.BottomBar({bottomBar: loader[i % 4]});
@@ -66,14 +62,17 @@ module.exports = function C() {
                ui.updateBottomBar(loader[i++ % 4]);
              }, 300);
 
-             R(`curl`, username, result.repo)
-               .then((value) => {
-                 ui.updateBottomBar('Create github repository done!\n');
-                 resolve(`https://github.com/${username}/${result.repo}.git`);
-               })
-               .catch((err) => {ui.updateBottomBar('Create github repository error!\n', err);reject(err)});
+             E(`git init && git remote add origin ${answers.url} && git remote show origin && git symbolic-ref HEAD && echo "# Hi" >> README.md && git add . && git commit -m "Hi" && git push -u origin master`)
+                 .then((value) => {
+                   B()
+                     .then((out) => {ui.updateBottomBar('Init done!\n');resolve(out)})
+                     .catch((err) => {ui.updateBottomBar('Init error!\n', err);reject(err)})
+                 })
+                 .catch((err) => {ui.updateBottomBar('Init error!\n', err);reject(err)});
 
+
+           });
          })
          .catch((err) => {reject(err)})
-  });
+  })
 }
