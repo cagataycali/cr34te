@@ -27,7 +27,6 @@ module.exports = function C() {
                 message: 'What\'s your git repository name?'
               }
             ];
-
             inquirer.prompt(questions).then(function (answers) {
 
               console.log(colors.green('?'), colors.bold('Write down your github password:'), emoji.emojify(':point_down:'), colors.italic.underline.cyan(' ( It will be hidden )'));
