@@ -6,25 +6,10 @@ var async = require('async');
 var prompt = require('prompt');
 var updateNotifier = require('update-notifier');
 var pkg = require('./package.json');
+var spawn = require( "spawnback" );
+var inquirer = require('inquirer');
 updateNotifier({pkg}).notify();
 
-function R(cmd, username, repo) {
-  return new Promise(function (resolve, reject) {
-    var spawn = require('child_process').spawn;
-    // var command = spawn(cmd, [repo, username], {
-    var command = spawn(cmd, ["-u", `${username.trim()}`, 'https://api.github.com/user/repos', "-d", `{"name":"${repo.trim()}"}`], {
-      cwd: process.cwd(),
-      stdio: 'inherit'
-    });
-    var result = '';
-    command.stdout.on('data', function(data) {
-         result += data.toString();
-    });
-    command.on('close', function(code) {
-        resolve(result);
-    });
-  })
-}
 
 module.exports = function C() {
  return new Promise(function(resolve, reject) {
@@ -35,13 +20,25 @@ module.exports = function C() {
        E(`git config user.name`) // Be sure your git.config.username equal your github username
          .then((username) => {
            console.log(`Dedected username: ${username}`);
-           prompt.start();
-           prompt.get([{name:'repo', required: true, description: "Github repo name: Ex. MyAwesomeRepo"}], function (err, result) {
-             R(`curl`, username, result.repo)
-               .then((value) => {
-                 resolve(`https://github.com/${username}/${result.repo}.git`);
-               })
-           });
+           var questions = [
+              {
+                type: 'input',
+                name: 'repo',
+                message: 'What\'s your git repository name?'
+              }
+            ];
+
+            inquirer.prompt(questions).then(function (answers) {
+
+              console.log(colors.green('?'), colors.bold('Write down your github password:'), emoji.emojify(':point_down:'), colors.italic.underline.cyan(' ( It will be hidden )'));
+              spawn( "curl", [ "-u", username.trim(), 'https://api.github.com/user/repos', "-d", `{"name":"${answers.repo.trim()}"}`], function( error, stdout ) {
+                  if (JSON.parse(stdout).clone_url === undefined) {
+                    reject(colors.red('Please check your github credentials.'));
+                  } else {
+                    resolve(JSON.parse(stdout).clone_url);
+                  }
+              });
+            });
          })
          .catch((err) => {reject(err)})
   });
