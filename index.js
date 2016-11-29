@@ -21,16 +21,22 @@ module.exports = function C() {
          .then((username) => {
            console.log(`Dedected username: ${username}`);
            var questions = [
+             {
+               type: 'confirm',
+               name: 'isPrivate',
+               message: 'Private?',
+               default: false
+             },
               {
                 type: 'input',
                 name: 'repo',
-                message: 'What\'s your git repository name?'
+                message: 'Name?'
               }
             ];
             inquirer.prompt(questions).then(function (answers) {
 
               console.log(colors.green('?'), colors.bold('Write down your github password:'), emoji.emojify(':point_down:'), colors.italic.underline.cyan(' ( It will be hidden )'));
-              spawn( "curl", [ "-u", username.trim(), 'https://api.github.com/user/repos', "-d", `{"name":"${answers.repo.trim()}"}`], function( error, stdout ) {
+              spawn( "curl", [ "-u", username.trim(), 'https://api.github.com/user/repos', "-d", `{"name":"${answers.repo.trim()}", "private":${answers.isPrivate}}, "description": "${answers.repo.trim()} created automatically."`], function( error, stdout ) {
                   if (JSON.parse(stdout).clone_url === undefined) {
                     reject(colors.red('Please check your github credentials.'));
                   } else {
