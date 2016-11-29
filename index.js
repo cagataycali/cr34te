@@ -30,7 +30,14 @@ module.exports = function C() {
               {
                 type: 'input',
                 name: 'repo',
-                message: 'Name?'
+                message: 'Name?',
+                validate: function (value) {
+                  value = value.trim();
+                  if (value.length > 0) {
+                    return true;
+                  }
+                  return 'Please enter a name';
+                }
               }
             ];
             inquirer.prompt(questions).then(function (answers) {
