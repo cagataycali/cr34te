@@ -19,18 +19,30 @@ module.exports = function C() {
 
        E(`git config user.name`) // Be sure your git.config.username equal your github username
          .then((username) => {
-           console.log(`Dedected username: ${username}`);
            var questions = [
              {
                type: 'confirm',
                name: 'isPrivate',
-               message: 'Private?',
+               message: 'private?',
                default: false
              },
               {
                 type: 'input',
                 name: 'repo',
-                message: 'Name?',
+                message: 'repository name?',
+                validate: function (value) {
+                  value = value.trim();
+                  if (value.length > 0) {
+                    return true;
+                  }
+                  return 'Please enter a name';
+                }
+              },
+              {
+                type: 'input',
+                name: 'username',
+                message: 'github username?',
+                default: username.trim(),
                 validate: function (value) {
                   value = value.trim();
                   if (value.length > 0) {
@@ -43,9 +55,9 @@ module.exports = function C() {
             inquirer.prompt(questions).then(function (answers) {
 
               console.log(colors.green('?'), colors.bold('Write down your github password:'), emoji.emojify(':point_down:'), colors.italic.underline.cyan(' ( It will be hidden )'));
-              spawn( "curl", [ "-u", username.trim(), 'https://api.github.com/user/repos', "-d", `{"name":"${answers.repo.trim()}", "private":${answers.isPrivate}}, "description": "${answers.repo.trim()} created automatically."`], function( error, stdout ) {
+              spawn( "curl", [ "-u", answers.username.trim(), 'https://api.github.com/user/repos', "-d", `{"name":"${answers.repo.trim()}", "private":"${answers.isPrivate}", "description": "${answers.repo.trim()} created automatically."}`], function( error, stdout ) {
                   if (JSON.parse(stdout).clone_url === undefined) {
-                    reject(colors.red('Please check your github credentials.'));
+                    reject(colors.red(`${JSON.parse(stdout).message},\n Please check your github credentials.`));
                   } else {
                     resolve(JSON.parse(stdout).clone_url);
                   }
