@@ -13,11 +13,7 @@ updateNotifier({pkg}).notify();
 
 module.exports = function C() {
  return new Promise(function(resolve, reject) {
-       console.log(colors.green('Be sure about your'));
-       console.log(emoji.emojify(' :rotating_light: '), emoji.emojify(colors.green(` Github username already set in your git config: `)), colors.inverse('git config --global github.user <username>'));
-       console.log(emoji.emojify(' :rotating_light: '), emoji.emojify(colors.green(` SSH keys registered in github: `)), colors.inverse('https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/'));
-
-       E(`git config user.name`) // Be sure your git.config.username equal your github username
+        E(`git config user.name`) // Be sure your git.config.username equal your github username
          .then((username) => {
            var questions = [
              {
@@ -59,7 +55,12 @@ module.exports = function C() {
                   if (JSON.parse(stdout).clone_url === undefined) {
                     reject(colors.red(`${JSON.parse(stdout).message},\n Please check your github credentials.`));
                   } else {
-                    resolve(JSON.parse(stdout).clone_url);
+                    var res = {
+                      ssh_url,
+                      clone_url,
+                      description
+                    } = JSON.parse(stdout);
+                    resolve(res);
                   }
               });
             });

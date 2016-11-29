@@ -1,5 +1,5 @@
 var C = require('./index');
 
 C()
-  .then((value) => {console.log(value);})
+  .then((value) => {console.log("");})
   .catch((err) => {console.log(err);})
