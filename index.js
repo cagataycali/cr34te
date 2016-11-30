@@ -46,12 +46,24 @@ module.exports = function C() {
                   }
                   return 'Please enter a name';
                 }
+              },
+              {
+                type: 'password',
+                message: 'Enter your git password',
+                name: 'password',
+                validate: function (value) {
+                  value = value.trim();
+                  if (value.length > 0) {
+                    return true;
+                  }
+                  return 'Please enter a password';
+                }
               }
             ];
             inquirer.prompt(questions).then(function (answers) {
 
-              console.log(colors.green('?'), colors.bold('Write down your github password:'), emoji.emojify(':point_down:'), colors.italic.underline.cyan(' ( It will be hidden )'));
-              spawn( "curl", [ "-u", answers.username.trim(), 'https://api.github.com/user/repos', "-d", `{"name":"${answers.repo.trim()}", "private":"${answers.isPrivate}", "description": "${answers.repo.trim()} created automatically."}`], function( error, stdout ) {
+              E(`curl -u '${answers.username.trim()}:${answers.password.trim()}' https://api.github.com/user/repos -d '{"name":"${answers.repo.trim()}","description":"${answers.repo.trim()} created automatically.","private":"${answers.isPrivate}"}'`)
+                .then((stdout) => {
                   if (JSON.parse(stdout).clone_url === undefined) {
                     reject(colors.red(`${JSON.parse(stdout).message},\n Please check your github credentials.`));
                   } else {
@@ -62,7 +74,8 @@ module.exports = function C() {
                     } = JSON.parse(stdout);
                     resolve(res);
                   }
-              });
+                })
+
             });
          })
          .catch((err) => {reject(err)})
