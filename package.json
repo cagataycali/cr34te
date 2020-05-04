@@ -4,7 +4,9 @@
   "description": "Create github repository in programmatically.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -31,6 +33,8 @@
     "node-emoji": "^1.3.1",
     "prompt": "^1.0.0",
     "spawnback": "^1.0.0",
-    "update-notifier": "^1.0.2"
-  }
+    "update-notifier": "^1.0.2",
+    "snyk": "^1.317.0"
+  },
+  "snyk": true
 }
